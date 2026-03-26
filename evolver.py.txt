@@ -1,0 +1,10 @@
+import numpy as np
+
+def mutate(pattern, rate=0.2):
+    new_pattern = pattern.copy()
+
+    for i in range(len(new_pattern)):
+        if np.random.rand() < rate:
+            new_pattern[i] = np.clip(new_pattern[i] + np.random.randn()*0.2, 0, 1)
+
+    return new_pattern

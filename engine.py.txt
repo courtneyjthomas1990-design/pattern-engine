@@ -1,0 +1,17 @@
+import numpy as np
+
+def get_pattern(num="104281421"):
+    digits = np.array([int(d) for d in num])
+    return digits / max(digits)
+
+def align_series(series, pattern):
+    pattern_resized = np.interp(
+        np.linspace(0, len(pattern), len(series)),
+        np.arange(len(pattern)),
+        pattern
+    )
+
+    alignment = np.correlate(series, pattern_resized, mode='same')
+    alignment = (alignment - alignment.min()) / (alignment.max() - alignment.min() + 1e-9)
+
+    return alignment, pattern_resized

@@ -1,0 +1,27 @@
+import yfinance as yf
+import pandas as pd
+from engine import get_pattern, align_series
+
+TICKERS = ["SPY", "AAPL", "TSLA", "BTC-USD"]
+
+def scan():
+    pattern = get_pattern()
+    results = []
+
+    for ticker in TICKERS:
+        data = yf.download(ticker, period="5d", interval="5m")
+
+        if data.empty:
+            continue
+
+        returns = data["Close"].pct_change().fillna(0)
+        returns_norm = (returns - returns.min()) / (returns.max() - returns.min() + 1e-9)
+
+        alignment, _ = align_series(returns_norm.values, pattern)
+
+        results.append({
+            "ticker": ticker,
+            "alignment": alignment[-1]
+        })
+
+    return pd.DataFrame(results)
